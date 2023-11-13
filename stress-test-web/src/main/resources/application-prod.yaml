@@ -1,0 +1,7 @@
+#配置数据源
+spring:
+  datasource:
+    url: jdbc:mysql://127.0.0.1/test?serverTimezone=UTC&useUnicode=true&characterEncoding=utf8&useSSL=false #    ///表示省略对应的IP和端口mybatis是指数据库
+    username: root
+    password: 123456
+    driver-class-name: com.mysql.cj.jdbc.Driver

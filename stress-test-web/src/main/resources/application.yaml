@@ -1,0 +1,16 @@
+server:
+  port: 8090
+
+spring:
+  application:
+    #名称的指定不影响请求路径，在微服务中充当标识，因此在单体应用中属于一种规范
+    name: test-web
+  profiles:
+    active: dev # dev 配置文件生效
+  devtools:
+    restart:
+      #开启热部署，更改文件自动重启而不是手动重启
+      enabled: false
+mybatis:
+  mapper-locations: classpath:mappers/*Mapper.xml
+  type-aliases-package: com.example.testweb.dao.pojo

@@ -1,0 +1,7 @@
+# .gitignore
+.idea/
+*.iml
+target/
+__pycache__/
+*.pyc
+*.csv
