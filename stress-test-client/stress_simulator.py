@@ -3,7 +3,7 @@ import os
 import random
 import string
 from locust import HttpUser, TaskSet, task, constant, between
-from tqdm import tqdm
+
 
 class TestLocust(TaskSet):
     def __init__(self, *args, **kwargs):
@@ -12,6 +12,10 @@ class TestLocust(TaskSet):
         self.current_requests = next(self.requests_iterator, None)
 
     def read_requests_per_interval(self):
+        """
+        读取下一个周期应该发起的请求数
+        :return:
+        """
         with open('./dataset/request_per_interval.csv', 'r') as file:
             reader = csv.reader(file)
             next(reader)  # Skip header
@@ -19,6 +23,11 @@ class TestLocust(TaskSet):
                 yield int(row[0])
 
     def read_data_file(self, num_rows):
+        """
+        读取num_rows行数的请求方式和数据
+        :param num_rows:
+        :return:
+        """
         data = []
         with open('./dataset/sorted_azurefunctions-accesses-2020-svc.csv', 'r') as file:
             reader = csv.reader(file)
@@ -31,6 +40,10 @@ class TestLocust(TaskSet):
 
     @task(1)
     def user_query_message(self):
+        """
+        用户执行测试任务：周期性的发起不同个数的请求。一个周期内的请求个数由数据集request_per_interval.csv决定，而具体每行的请求方式和数据则由sorted_azurefunctions-accesses-2020-svc.csv决定
+        :return:
+        """
         if self.current_requests is not None:
             num_rows = self.current_requests
             data = self.read_data_file(num_rows)
@@ -63,7 +76,7 @@ class TestLocust(TaskSet):
                     # 断言返回结果中的 "succ" 字段值为 "ok"
                     assert r.status_code == 200
 
-            # 等待2秒
+            # 等待2秒:用户发起一次请求之后的等待时间
             self.wait()
 
     def on_start(self):
@@ -74,9 +87,15 @@ class TestLocust(TaskSet):
         # 当停止时，做一些清理工作
         pass
 
+
 class WebsiteUser(HttpUser):
+    """
+    用户线程类：
+    指定一个用户的测试任务和每个周期内的等待时间
+    """
     tasks = [TestLocust]
     wait_time = between(1, 3)  # 设置用户执行任务之间的等待时间范围
+
 
 # 下面这些可以不用写
 if __name__ == '__main__':

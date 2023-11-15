@@ -10,9 +10,9 @@
     </parent>
     <groupId>com.example</groupId>
     <artifactId>stress-test-web</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
-    <name>test-web</name>
-    <description>test-web</description>
+    <version>1.0.0</version>
+    <name>stress-test-web</name>
+    <description>stress-test-web</description>
     <properties>
         <java.version>17</java.version>
     </properties>

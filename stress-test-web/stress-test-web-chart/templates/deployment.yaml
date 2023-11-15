@@ -1,0 +1,45 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Release.Name }}-stress-test-web
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: stress-test-web
+  template:
+    metadata:
+      labels:
+        app: stress-test-web
+    spec:
+      containers:
+        - name: stress-test-web
+          image: {{ .Values.stressTestWeb.image }}
+          ports:
+            - containerPort: 8090
+          env:
+            - name: SPRING_PROFILES_ACTIVE
+              value: "default"
+            - name: SPRING_DATASOURCE_URL
+              value: "jdbc:mysql://{{ .Release.Name }}-mysql:3306/{{ .Values.mysql.database }}?serverTimezone=UTC&useUnicode=true&characterEncoding=utf8&useSSL=false"
+            - name: SPRING_DATASOURCE_USERNAME
+              value: "root"
+            - name: SPRING_DATASOURCE_PASSWORD
+              value: {{ .Values.mysql.rootPassword | quote }}
+            - name: SPRING_REDIS_HOST
+              value: {{ .Release.Name }}-redis
+            - name: SPRING_REDIS_PORT
+              value: "6379"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Release.Name }}-stress-test-web
+spec:
+  selector:
+    app: stress-test-web
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 8090
+  type: ClusterIP

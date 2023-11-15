@@ -1,0 +1,14 @@
+# Default values for stress-test-web-chart.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+mysql:
+  image: mysql:latest
+  rootPassword: 123456
+  database: test
+
+redis:
+  image: redis:latest
+
+stressTestWeb:
+  image: ruo980/stress-test-web:1.0.0
