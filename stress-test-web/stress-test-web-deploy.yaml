@@ -2,6 +2,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: stress-test-web
+  namespace: lry
 spec:
   replicas: 1 # 根据需要调整副本数量
   selector:
@@ -30,3 +31,4 @@ spec:
               value: "redis-service"
             - name: SPRING_REDIS_PORT
               value: "6379"
+          imagePullPolicy: Always  # 设置镜像拉取策略为始终拉取

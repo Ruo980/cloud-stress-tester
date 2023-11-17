@@ -2,6 +2,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: mysql-deployment
+  namespace: lry
 spec:
   replicas: 1
   selector:
@@ -14,7 +15,8 @@ spec:
     spec:
       containers:
         - name: mysql
-          image: mysql:latest
+          image: mysql:8.1
+          # 设置初始创建时的账号密码、数据库等信息
           env:
             - name: MYSQL_ROOT_PASSWORD
               valueFrom:
