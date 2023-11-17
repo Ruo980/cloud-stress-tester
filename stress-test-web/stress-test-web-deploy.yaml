@@ -1,0 +1,32 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: stress-test-web
+spec:
+  replicas: 1 # 根据需要调整副本数量
+  selector:
+    matchLabels:
+      app: stress-test-web
+  template:
+    metadata:
+      labels:
+        app: stress-test-web
+    spec:
+      containers:
+        - name: stress-test-web
+          image: ruo980/stress-test-web:1.0.0 # docker hub 中的镜像
+          ports:
+            - containerPort: 8090 # 应用运行的端口
+          env: # 环境变量配置
+            - name: SPRING_DATASOURCE_URL
+              value: "jdbc:mysql://mysql-service:3306/test?serverTimezone=UTC&useUnicode=true&characterEncoding=utf8&useSSL=false"
+            - name: SPRING_DATASOURCE_USERNAME
+              value: "root"
+            - name: SPRING_DATASOURCE_PASSWORD
+              value: "123456"
+            - name: SPRING_DATASOURCE_DRIVER_CLASS_NAME
+              value: "com.mysql.cj.jdbc.Driver"
+            - name: SPRING_REDIS_HOST
+              value: "redis-service"
+            - name: SPRING_REDIS_PORT
+              value: "6379"

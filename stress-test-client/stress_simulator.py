@@ -58,7 +58,7 @@ class TestLocust(TaskSet):
                 header = {'Content-Type': 'application/json;charset=UTF-8'}
                 if read == "True":
                     # 发起 GET 请求
-                    url = '/users' + '?row=' + str(num)
+                    url = '/users-re' + '?row=' + str(num)
                     r = self.client.get(url, headers=header)
                     # 断言返回结果中的 "succ" 字段值为 "ok"
                     assert r.status_code == 200
@@ -72,7 +72,7 @@ class TestLocust(TaskSet):
                         }
                         users.append(user)
                     # 发起 POST 请求
-                    r = self.client.post('/users', headers=header, json=users)
+                    r = self.client.post('/users-re', headers=header, json=users)
                     # 断言返回结果中的 "succ" 字段值为 "ok"
                     assert r.status_code == 200
 

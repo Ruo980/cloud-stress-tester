@@ -1,0 +1,16 @@
+# templates/stress-test-web/service.yaml
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "stress-test-web.fullname" . }}
+  labels:
+    app: {{ include "stress-test-web.name" . }}
+spec:
+  type: LoadBalancer
+  ports:
+    - port: {{ .Values.stressTestWeb.service.externalPort }}
+      targetPort: {{ .Values.stressTestWeb.service.internalPort }}
+  selector:
+    app: {{ include "stress-test-web.name" . }}
+

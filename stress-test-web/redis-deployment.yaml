@@ -1,0 +1,19 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: redis-deployment
+spec:
+  replicas: 1  # 可以根据需要调整
+  selector:
+    matchLabels:
+      app: redis
+  template:
+    metadata:
+      labels:
+        app: redis
+    spec:
+      containers:
+        - name: redis
+          image: redis  # 使用官方 Redis 镜像
+          ports:
+            - containerPort: 6379  # Redis 默认端口

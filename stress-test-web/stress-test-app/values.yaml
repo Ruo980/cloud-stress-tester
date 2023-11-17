@@ -1,0 +1,33 @@
+# stress-test-app/values.yaml
+replicaCount: 1
+
+# stress-test-app/values.yaml
+
+# 生成 stress-test-web chart 时的基本配置：包括连接 MySQL 和 Redis 的配置
+stressTestWeb:
+  enabled: true
+  image:
+    repository: ruo980/stress-test-web #借助 docker Hub 中的镜像进行生成
+    tag: 1.0.0
+  service:
+    externalPort: 8090
+    internalPort: 8090
+  env:
+    SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/test?serverTimezone=UTC&useUnicode=true&characterEncoding=utf8&useSSL=false
+    SPRING_DATASOURCE_USERNAME: root
+    SPRING_DATASOURCE_PASSWORD: 123456
+    SPRING_REDIS_HOST: redis
+    SPRING_REDIS_PORT: 6379
+
+# 生成 mysql chart 时的基本配置
+mysql:
+  enabled: true
+  mysqlRootPassword: 123456
+  mysqlUser: root
+  mysqlPassword: 123456
+  mysqlDatabase: test
+
+# 生成 redis chart 时的基本配置
+redis:
+  enabled: true
+  usePassword: false
