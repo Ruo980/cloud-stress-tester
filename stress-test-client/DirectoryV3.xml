@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?> 
  <trees>
      <tree path="/TestLocust.py" title="测试脚本"/>
-     <tree path="/stress_simulator.py" title="压力测试：时间戳"/>
+     <tree path="/stress_simulator.py" title="压力测试：对MySQL或Redis某个Pod进行操作" extension="" presentableText=""
+           tooltipTitle="" icon="" textColor="" backgroundColor=""/>
      <tree path="/test.py" title="按照其他数据集进行批量定时请求"/>
     <tree path="/dataset/sorted_azurefunctions-accesses-2020-svc.csv" title="时间戳排序后数据"/>
      <tree path="/dataset/azurefunctions-accesses-2020.csv" title="初始数据集"/>
@@ -11,4 +12,9 @@
      <tree path="/preprocess_script/calculate_requests.py" title="预处理：计算周期内请求数"/>
      <tree path="/preprocess_script/generate_and_store_user_in_redis.py" title="预处理：生成初始化Redis数据"/>
      <tree path="/preprocess_script/preprocess_data.py" title="预处理：对时间戳进行重排序"/>
- </trees>
+    <tree path="/stress_simulator_plus.py" title="压力测试：改良版本，对MySQL和Redis都进行请求"/>
+    <tree path="/dataset/request_per_interval.csv" title="周期性请求量数据集"/>
+    <tree path="/dataset" title="数据集包"/>
+    <tree path="/generate_data" title="原始数据生成脚本包" extension="" presentableText="" tooltipTitle="" icon=""
+          textColor="" backgroundColor=""/>
+</trees>

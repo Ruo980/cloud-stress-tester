@@ -7,7 +7,7 @@ fake = faker.Faker()
 
 # 初始化 Redis 连接
 redis_host = '127.0.0.1'  # Redis 主机地址
-redis_port = 6379  # Redis 端口号
+redis_port = 6380  # Redis 端口号
 redis_db = 0  # Redis 数据库索引
 redis_conn = redis.StrictRedis(host=redis_host, port=redis_port, db=redis_db)
 
@@ -38,7 +38,7 @@ def query_users_by_row(row):
 
 # 生成用户数据:为redis设置初始数据量方便之后的查询和插入操作
 users_to_insert = []
-for _ in range(20000):
+for _ in range(60000):
     user = {
         'nickname': fake.user_name(),
         'age': fake.random_int(min=18, max=60)

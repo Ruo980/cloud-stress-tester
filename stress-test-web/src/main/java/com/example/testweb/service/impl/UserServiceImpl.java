@@ -11,7 +11,6 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import com.fasterxml.jackson.databind.ObjectMapper; // 引入 Jackson ObjectMapper
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.io.IOException;
 import java.util.List;
@@ -36,17 +35,14 @@ public class UserServiceImpl implements UserService {
         return userMapper.selectUsersByRow(row);
     }
 
-    /**
-     * 将用户列表批量添加到 Mysql 的数据库中
-     * @param users 要添加的用户列表。
-     */
     @Override
-    @Transactional(rollbackFor = Exception.class)
     public void addUsers(List<User> users) {
         try {
-            userMapper.batchInsertUsers(users);
+            for (User user : users) {
+                userMapper.insertUser(user);
+            }
         } catch (Exception e) {
-            throw new RuntimeException("批量插入用户失败", e);
+            throw new RuntimeException("插入用户失败", e);
         }
     }
 

@@ -1,0 +1,9 @@
+apiVersion: networking.istio.io/v1alpha3
+kind: DestinationRule
+metadata:
+  name: your-service-destination-rule
+spec:
+  host: stress-test-web-service
+  trafficPolicy:
+    tls:
+      mode: ISTIO_MUTUAL

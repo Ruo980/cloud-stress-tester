@@ -4,7 +4,7 @@ metadata:
   name: redis-deployment
   namespace: lry
 spec:
-  replicas: 1  # 可以根据需要调整
+  replicas: 1  # Redis 默认只有一个
   selector:
     matchLabels:
       app: redis
@@ -18,3 +18,10 @@ spec:
           image: redis  # 使用官方 Redis 镜像
           ports:
             - containerPort: 6379  # Redis 默认端口
+          resources:
+            requests:
+              memory: "3Gi"
+              cpu: "3"
+            limits:
+              memory: "6Gi"
+              cpu: "6"

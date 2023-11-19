@@ -32,3 +32,10 @@ spec:
             - name: SPRING_REDIS_PORT
               value: "6379"
           imagePullPolicy: Always  # 设置镜像拉取策略为始终拉取
+          resources:
+            requests:
+              memory: "3Gi"
+              cpu: "1.5"
+            limits:
+              memory: "5Gi"
+              cpu: "2.5"

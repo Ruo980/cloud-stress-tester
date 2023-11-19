@@ -10,4 +10,5 @@ spec:
     - protocol: TCP
       port: 8090
       targetPort: 8090
-  type: NodePort
+      nodePort: 30341
+  type: LoadBalancer # 将类型改为 LoadBalancer
