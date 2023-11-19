@@ -14,12 +14,14 @@ redis_conn = redis.StrictRedis(host=redis_host, port=redis_port, db=redis_db)
 # 有序集合名称
 sorted_set_name = 'users_sorted_set'
 
+
 def insert_users_to_redis(user_list):
     """
     插入用户集合到 Redis 有序集合中
     """
     for user in user_list:
         redis_conn.zadd(sorted_set_name, {json.dumps(user): user['age']})
+
 
 def query_users_by_row(row):
     """
@@ -33,9 +35,10 @@ def query_users_by_row(row):
         result.append(user)
     return result
 
-# 生成用户数据
+
+# 生成用户数据:为redis设置初始数据量方便之后的查询和插入操作
 users_to_insert = []
-for _ in range(600):
+for _ in range(20000):
     user = {
         'nickname': fake.user_name(),
         'age': fake.random_int(min=18, max=60)
@@ -47,6 +50,6 @@ for _ in range(600):
 # 插入用户数据
 insert_users_to_redis(users_to_insert)
 
-# 查询前 10 行数据
-result = query_users_by_row(10)
-print("前 10 行数据：", result)
+# 查询前 100 行数据
+result = query_users_by_row(100)
+print("前 100 行数据：", result)
