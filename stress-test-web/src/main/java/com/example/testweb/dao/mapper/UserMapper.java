@@ -14,7 +14,7 @@ public interface UserMapper {
      *
      * @return List
      */
-    public List<User> selectUsersByRow(int row);
+    List<User> selectUsersByRow(int row);
 
     /**
      * User 表插入：将指定数据插入表中
@@ -22,5 +22,13 @@ public interface UserMapper {
      * @param user User
      * @return int
      */
-    public int insertUser(User user);
+    int insertUser(User user);
+
+    /**
+     * User 表插入：将大规模的数据批量插入表中
+     *
+     * @param users List<User>
+     * @return int
+     */
+    int batchInsertUsers(List<User> users);
 }
