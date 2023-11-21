@@ -1,0 +1,19 @@
+=======================================================================
+= stress-test-web-chart =
+=======================================================================
+
+Thank you for installing stress-test-web-chart!
+
+To access the stress-test-web application, you can use the following steps:
+
+1. Get the application URL by running:
+
+   export NODE_PORT=$(kubectl get --namespace lry -o jsonpath="{.spec.ports[0].nodePort}" services {{ include "stress-test-web-chart.fullname" . }}-service)
+   export NODE_IP=$(kubectl get nodes --namespace lry -o jsonpath="{.items[0].status.addresses[0].address}")
+   echo "Application URL: http://$NODE_IP:$NODE_PORT"
+
+2. Open a web browser and navigate to the provided URL.
+
+For more details on how to configure and customize the stress-test-web application, refer to the documentation.
+
+=======================================================================

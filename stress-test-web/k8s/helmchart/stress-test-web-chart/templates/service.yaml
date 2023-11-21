@@ -1,0 +1,15 @@
+# stress-test-web-chart/templates/service.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "stress-test-web-chart.fullname" . }}-service
+spec:
+  selector:
+    app: stress-test-web
+  ports:
+    - protocol: TCP
+      port: {{ .Values.service.port }}
+      targetPort: 8090
+      nodePort: {{ .Values.service.nodePort }}
+  type: {{ .Values.service.type }}
+

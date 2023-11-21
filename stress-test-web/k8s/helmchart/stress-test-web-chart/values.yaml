@@ -1,0 +1,34 @@
+# my-stress-test-chart/values.yaml
+replicaCount: 1
+
+image:
+  repository: ruo980/stress-test-web
+  tag: 1.0.0
+
+service:
+  type: LoadBalancer
+  port: 8090
+  nodePort: 30341
+
+resources:
+  requests:
+    memory: "3Gi"
+    cpu: "1.5"
+  limits:
+    memory: "5Gi"
+    cpu: "2.5"
+
+config:
+  springDatasourceUrl: "jdbc:mysql://mysql-service:3306/test?serverTimezone=UTC&useUnicode=true&characterEncoding=utf8&useSSL=false"
+  springDatasourceUsername: "root"
+  springDatasourcePassword: "123456"
+  springDatasourceDriverClassName: "com.mysql.cj.jdbc.Driver"
+  springRedisHost: "redis-service"
+  springRedisPort: "6379"
+
+hpa:
+  enabled: true
+  minReplicas: 3
+  maxReplicas: 10
+  targetCPUUtilizationPercentage: 50
+  targetMemoryUtilizationPercentage: 70

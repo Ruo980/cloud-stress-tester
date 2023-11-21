@@ -1,0 +1,59 @@
+# stress-test-web-chart/templates/deployment.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "stress-test-web-chart.fullname" . }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app: stress-test-web
+  template:
+    metadata:
+      labels:
+        app: stress-test-web
+    spec:
+      containers:
+        - name: stress-test-web
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          ports:
+            - containerPort: 8090
+          env:
+            - name: SPRING_DATASOURCE_URL
+              valueFrom:
+                configMapKeyRef:
+                  name: {{ include "stress-test-web-chart.fullname" . }}-configmap
+                  key: springDatasourceUrl
+            - name: SPRING_DATASOURCE_USERNAME
+              valueFrom:
+                configMapKeyRef:
+                  name: {{ include "stress-test-web-chart.fullname" . }}-configmap
+                  key: springDatasourceUsername
+            - name: SPRING_DATASOURCE_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ include "stress-test-web-chart.fullname" . }}-secret
+                  key: springDatasourcePassword
+            - name: SPRING_DATASOURCE_DRIVER_CLASS_NAME
+              valueFrom:
+                configMapKeyRef:
+                  name: {{ include "stress-test-web-chart.fullname" . }}-configmap
+                  key: springDatasourceDriverClassName
+            - name: SPRING_REDIS_HOST
+              valueFrom:
+                configMapKeyRef:
+                  name: {{ include "stress-test-web-chart.fullname" . }}-configmap
+                  key: springRedisHost
+            - name: SPRING_REDIS_PORT
+              valueFrom:
+                configMapKeyRef:
+                  name: {{ include "stress-test-web-chart.fullname" . }}-configmap
+                  key: springRedisPort
+          imagePullPolicy: Always
+          resources:
+            requests:
+              memory: "{{ .Values.resources.requests.memory }}"
+              cpu: "{{ .Values.resources.requests.cpu }}"
+            limits:
+              memory: "{{ .Values.resources.limits.memory }}"
+              cpu: "{{ .Values.resources.limits.cpu }}"

@@ -1,0 +1,11 @@
+# stress-test-web-chart/templates/configmap.yaml
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "stress-test-web-chart.fullname" . }}-configmap
+data:
+  springDatasourceUrl: {{ .Values.config.springDatasourceUrl | quote }}
+  springDatasourceUsername: {{ .Values.config.springDatasourceUsername | quote }}
+  springDatasourceDriverClassName: {{ .Values.config.springDatasourceDriverClassName | quote }}
+  springRedisHost: {{ .Values.config.springRedisHost | quote }}
+  springRedisPort: {{ .Values.config.springRedisPort | quote }}

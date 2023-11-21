@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?> 
+ <trees>
+     <tree path="/k8s" title="应用在K8s集群中搭建部署文件"/>
+ </trees>

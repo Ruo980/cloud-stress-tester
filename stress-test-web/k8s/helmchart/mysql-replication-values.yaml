@@ -1,0 +1,22 @@
+# mysql-replication-values.yaml
+
+mysqlRootPassword: 123456
+mysqlUser: root
+mysqlPassword: "" # 留空，因为我们使用的是 root 用户
+mysqlDatabase: test
+
+replication:
+  enabled: true
+  user: repl_user
+  password: repl_password
+  existingSecret: ""
+
+primary:
+  persistence:
+    enabled: true
+
+secondary:
+  enabled: true
+  replicas: 1
+  persistence:
+    enabled: true
