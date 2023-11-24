@@ -4,16 +4,38 @@
 
 Thank you for installing stress-test-web-chart!
 
-To access the stress-test-web application, you can use the following steps:
+To access the stress-test-web application, follow these steps:
 
-1. Get the application URL by running:
+1. **Check the Deployment:**
+   - Ensure that the Deployment is running by using the following command:
+     ```bash
+     kubectl get deployments -n YOUR_NAMESPACE
+     ```
+   - Verify that the desired number of replicas are ready.
 
-   export NODE_PORT=$(kubectl get --namespace lry -o jsonpath="{.spec.ports[0].nodePort}" services {{ include "stress-test-web-chart.fullname" . }}-service)
-   export NODE_IP=$(kubectl get nodes --namespace lry -o jsonpath="{.items[0].status.addresses[0].address}")
-   echo "Application URL: http://$NODE_IP:$NODE_PORT"
+2. **Check the Pods:**
+   - Verify that the Pods are running successfully:
+     ```bash
+     kubectl get pods -n YOUR_NAMESPACE
+     ```
 
-2. Open a web browser and navigate to the provided URL.
+3. **Check the Service:**
+   - Ensure that the Service is accessible:
+     ```bash
+     kubectl get services -n YOUR_NAMESPACE
+     ```
+   - Note the external IP or hostname under the "EXTERNAL-IP" column. If using a LoadBalancer, it may take some time to obtain an external IP.
 
-For more details on how to configure and customize the stress-test-web application, refer to the documentation.
+4. **Access the Application:**
+   - Once the external IP or hostname is available, you can access the stress-test-web application using the following URL:
+     ```
+     http://EXTERNAL-IP:8090
+     ```
+   - If a specific nodePort is used, replace `EXTERNAL-IP` with the node's IP and the appropriate port.
 
-=======================================================================
+5. **Additional Configuration:**
+   - If you have customized configuration options, such as environment variables, ConfigMap, or Secrets, ensure that they are correctly applied to the Deployment.
+
+For any issues or further assistance, please refer to the documentation or contact your system administrator.
+
+install: helm install stress-test-web-release . --namespace lry

@@ -2,7 +2,8 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ include "stress-test-web-chart.fullname" . }}
+  name: {{ .Release.Name }}-deployment
+  namespace: {{ .Release.Namespace }}
 spec:
   replicas: {{ .Values.replicaCount }}
   selector:
@@ -15,45 +16,42 @@ spec:
     spec:
       containers:
         - name: stress-test-web
-          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          image: {{ .Values.image.repository }}:{{ .Values.image.tag }}
           ports:
             - containerPort: 8090
           env:
             - name: SPRING_DATASOURCE_URL
               valueFrom:
                 configMapKeyRef:
-                  name: {{ include "stress-test-web-chart.fullname" . }}-configmap
-                  key: springDatasourceUrl
+                  name: {{ .Release.Name }}-configmap
+                  key: SPRING_DATASOURCE_URL
             - name: SPRING_DATASOURCE_USERNAME
               valueFrom:
-                configMapKeyRef:
-                  name: {{ include "stress-test-web-chart.fullname" . }}-configmap
-                  key: springDatasourceUsername
+                secretKeyRef:
+                  name: {{ .Release.Name }}-secrets
+                  key: SPRING_DATASOURCE_USERNAME
             - name: SPRING_DATASOURCE_PASSWORD
               valueFrom:
                 secretKeyRef:
-                  name: {{ include "stress-test-web-chart.fullname" . }}-secret
-                  key: springDatasourcePassword
+                  name: {{ .Release.Name }}-secrets
+                  key: SPRING_DATASOURCE_PASSWORD
             - name: SPRING_DATASOURCE_DRIVER_CLASS_NAME
               valueFrom:
                 configMapKeyRef:
-                  name: {{ include "stress-test-web-chart.fullname" . }}-configmap
-                  key: springDatasourceDriverClassName
+                  name: {{ .Release.Name }}-configmap
+                  key: SPRING_DATASOURCE_DRIVER_CLASS_NAME
             - name: SPRING_REDIS_HOST
               valueFrom:
                 configMapKeyRef:
-                  name: {{ include "stress-test-web-chart.fullname" . }}-configmap
-                  key: springRedisHost
+                  name: {{ .Release.Name }}-configmap
+                  key: SPRING_REDIS_HOST
             - name: SPRING_REDIS_PORT
               valueFrom:
                 configMapKeyRef:
-                  name: {{ include "stress-test-web-chart.fullname" . }}-configmap
-                  key: springRedisPort
+                  name: {{ .Release.Name }}-configmap
+                  key: SPRING_REDIS_PORT
           imagePullPolicy: Always
           resources:
             requests:
               memory: "{{ .Values.resources.requests.memory }}"
               cpu: "{{ .Values.resources.requests.cpu }}"
-            limits:
-              memory: "{{ .Values.resources.limits.memory }}"
-              cpu: "{{ .Values.resources.limits.cpu }}"

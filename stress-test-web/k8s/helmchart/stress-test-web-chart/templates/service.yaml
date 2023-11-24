@@ -1,15 +1,14 @@
-# stress-test-web-chart/templates/service.yaml
 apiVersion: v1
 kind: Service
 metadata:
-  name: {{ include "stress-test-web-chart.fullname" . }}-service
+  name: {{ .Release.Name }}-service
+  namespace: {{ .Release.Namespace }}
 spec:
   selector:
     app: stress-test-web
   ports:
     - protocol: TCP
-      port: {{ .Values.service.port }}
+      port: 8090
       targetPort: 8090
-      nodePort: {{ .Values.service.nodePort }}
-  type: {{ .Values.service.type }}
-
+      nodePort: 30341
+  type: LoadBalancer

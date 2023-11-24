@@ -1,15 +1,36 @@
 # my-stress-test-chart/values.yaml
 replicaCount: 1
-
+# image 设置
 image:
   repository: ruo980/stress-test-web
   tag: 1.0.0
 
+# service 设置
 service:
   type: LoadBalancer
   port: 8090
   nodePort: 30341
 
+# hpa 设置
+hpa:
+  minReplicas: 3
+  maxReplicas: 10
+  cpuUtilization: 50
+  memoryUtilization: 70
+
+# configMap 设置
+configMap:
+  SPRING_DATASOURCE_URL: "jdbc:mysql://mysql-service:3306/test?serverTimezone=UTC&useUnicode=true&characterEncoding=utf8&useSSL=false"
+  SPRING_DATASOURCE_DRIVER_CLASS_NAME: "com.mysql.cj.jdbc.Driver"
+  SPRING_REDIS_HOST: "redis-service"
+  SPRING_REDIS_PORT: "6379"
+
+# secrets 设置
+secrets:
+  SPRING_DATASOURCE_USERNAME: "root"
+  SPRING_DATASOURCE_PASSWORD: "123456"
+
+# Pod的 resources 设置
 resources:
   requests:
     memory: "3Gi"
@@ -18,17 +39,3 @@ resources:
     memory: "5Gi"
     cpu: "2.5"
 
-config:
-  springDatasourceUrl: "jdbc:mysql://mysql-service:3306/test?serverTimezone=UTC&useUnicode=true&characterEncoding=utf8&useSSL=false"
-  springDatasourceUsername: "root"
-  springDatasourcePassword: "123456"
-  springDatasourceDriverClassName: "com.mysql.cj.jdbc.Driver"
-  springRedisHost: "redis-service"
-  springRedisPort: "6379"
-
-hpa:
-  enabled: true
-  minReplicas: 3
-  maxReplicas: 10
-  targetCPUUtilizationPercentage: 50
-  targetMemoryUtilizationPercentage: 70
