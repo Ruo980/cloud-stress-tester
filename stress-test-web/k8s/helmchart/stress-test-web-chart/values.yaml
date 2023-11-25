@@ -1,5 +1,5 @@
 # my-stress-test-chart/values.yaml
-replicaCount: 1
+replicaCount: 3
 # image 设置
 image:
   repository: ruo980/stress-test-web
@@ -30,12 +30,20 @@ secrets:
   SPRING_DATASOURCE_USERNAME: "root"
   SPRING_DATASOURCE_PASSWORD: "123456"
 
-# Pod的 resources 设置
+# Pod的 resources 设置:普通框架
+#resources:
+  #requests:
+    #memory: "4000Mi"
+    #cpu: "4000m"
+  #limits:
+    #memory: "1Gi"
+    #cpu: "1"
+
+# Pod的 Resources 设置：柔性框架
 resources:
   requests:
-    memory: "3Gi"
-    cpu: "1.5"
+    memory: "1Mi"
+    cpu: "1m"
   limits:
-    memory: "5Gi"
-    cpu: "2.5"
-
+    memory: "1Gi"
+    cpu: "0.5"

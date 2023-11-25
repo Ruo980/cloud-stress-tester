@@ -14,6 +14,11 @@ spec:
       labels:
         app: stress-test-web
     spec:
+      # 柔性调度框架调整
+      schedulerName: rescheduler
+      # 设置亲和度:只在slave-node3上进行实验
+      nodeSelector:
+        kubernetes.io/hostname: "slave-node3"
       containers:
         - name: stress-test-web
           image: {{ .Values.image.repository }}:{{ .Values.image.tag }}
@@ -50,8 +55,11 @@ spec:
                 configMapKeyRef:
                   name: {{ .Release.Name }}-configmap
                   key: SPRING_REDIS_PORT
-          imagePullPolicy: Always
+          imagePullPolicy: IfNotPresent
           resources:
             requests:
               memory: "{{ .Values.resources.requests.memory }}"
               cpu: "{{ .Values.resources.requests.cpu }}"
+            limits:
+              memory: "{{.Values.resources.limits.memory}}"
+              cpu: "{{.Values.resources.limits.cpu}}"

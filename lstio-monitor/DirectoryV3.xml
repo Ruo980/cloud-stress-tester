@@ -1,5 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?> 
- <trees>
-     <tree path="/dataset" title="数据集包"/>
-     <tree path="/dataset/CPU_used" title="CPU使用率数据集包"/>
- </trees>
