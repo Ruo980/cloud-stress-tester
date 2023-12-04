@@ -7,8 +7,8 @@ spec:
     apiVersion: apps/v1
     kind: Deployment
     name: stress-test-web
-  minReplicas: 3
-  maxReplicas: 10
+  minReplicas: 30
+  maxReplicas: 30
   metrics:
     - type: Resource
       resource:

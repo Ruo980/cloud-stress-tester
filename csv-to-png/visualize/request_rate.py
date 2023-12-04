@@ -12,22 +12,27 @@ def beautify_plot():
     plt.rcParams['figure.titlesize'] = 18
 
 
-def visualize_memory_data(file_path):
+def visualize_cpu_data(file_path):
     # 读取CSV文件
     df = pd.read_csv(file_path)
 
     # 设置美化参数
     beautify_plot()
 
+    # 提取数量和时间列
+    data = df['count']
+    time = [i * 5 for i in range(1, len(data) + 1)]
+    # 将数据除以5
+    modified_data = data / 5
+
     # 绘制折线图
-    plt.figure(figsize=(14, 9))
-    plt.plot(df['Time'], df['Temp_raw'], marker=None, linestyle='-', color='#2ecc71', linewidth=2,label="Raw_MEMORY")
-    plt.plot(df['Time'], df['Temp_re'], marker=None, linestyle='-', color='#e74c3c', linewidth=2,label="RE_MEMORY")
+    plt.figure(figsize=(18, 12))
+    plt.plot(time, modified_data, marker=None, linestyle='-', color='#2ecc71', linewidth=2,label="Raw_request")
 
     # 添加标签和标题
-    plt.title('MEMORY USAGE OVER TIME')
+    plt.title('REQUEST RATE OVER TIME')
     plt.xlabel('Time (s)')
-    plt.ylabel('MEMORY Used Rate (%)')
+    plt.ylabel('Request Rate (ops/s)')
 
     # 显示图例和网格
     plt.legend()
@@ -39,5 +44,5 @@ def visualize_memory_data(file_path):
 
 # 在函数外调用，确保不会在导入时显示图形
 if __name__ == "__main__":
-    file_path = "../dataset/merged/memory_result.csv"
-    visualize_memory_data(file_path)
+    file_path = "../dataset/REQUEST_RATE/request_per_interval2.csv"
+    visualize_cpu_data(file_path)

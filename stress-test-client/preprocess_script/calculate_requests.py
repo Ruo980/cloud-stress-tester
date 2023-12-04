@@ -3,7 +3,7 @@ from tqdm import tqdm
 
 # 逐块读取CSV文件
 chunk_size = 10000  # 适当的块大小，可以根据需要调整
-input_file = '../dataset/sorted_azurefunctions-accesses-2020-svc.csv'
+input_file = '../dataset/azurefunctions-accesses-2020.csv'
 output_file = '../dataset/request_per_interval.csv'
 
 # 获取总行数，以便在tqdm中显示进度

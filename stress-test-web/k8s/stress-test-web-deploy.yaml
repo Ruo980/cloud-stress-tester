@@ -4,7 +4,7 @@ metadata:
   name: stress-test-web
   namespace: lry
 spec:
-  replicas: 1 # 根据需要调整副本数量
+  replicas: 30 # 根据需要调整副本数量
   selector:
     matchLabels:
       app: stress-test-web
@@ -13,6 +13,11 @@ spec:
       labels:
         app: stress-test-web
     spec:
+      # 柔性调度框架调整
+      #schedulerName: rescheduler
+      # 设置亲和度:只在slave-node3上进行实验
+      nodeSelector:
+        kubernetes.io/hostname: "slave-node3"
       containers:
         - name: stress-test-web
           image: ruo980/stress-test-web:1.0.0 # docker hub 中的镜像
@@ -31,11 +36,11 @@ spec:
               value: "redis-service"
             - name: SPRING_REDIS_PORT
               value: "6379"
-          imagePullPolicy: Always  # 设置镜像拉取策略为始终拉取
+          imagePullPolicy: IfNotPresent
           resources:
             requests:
-              memory: "3Gi"
-              cpu: "1.5"
+              memory: "1Mi"
+              cpu: "1m"
             limits:
-              memory: "5Gi"
-              cpu: "2.5"
+              memory: "1Gi"
+              cpu: "0.5"

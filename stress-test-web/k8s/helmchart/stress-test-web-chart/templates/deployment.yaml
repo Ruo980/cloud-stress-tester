@@ -5,7 +5,7 @@ metadata:
   name: {{ .Release.Name }}-deployment
   namespace: {{ .Release.Namespace }}
 spec:
-  replicas: {{ .Values.replicaCount }}
+  replicas: 30
   selector:
     matchLabels:
       app: stress-test-web
@@ -15,7 +15,7 @@ spec:
         app: stress-test-web
     spec:
       # 柔性调度框架调整
-      schedulerName: rescheduler
+      #schedulerName: rescheduler
       # 设置亲和度:只在slave-node3上进行实验
       nodeSelector:
         kubernetes.io/hostname: "slave-node3"

@@ -1,5 +1,5 @@
 # my-stress-test-chart/values.yaml
-replicaCount: 3
+replicaCount: 5
 # image 设置
 image:
   repository: ruo980/stress-test-web
@@ -13,8 +13,8 @@ service:
 
 # hpa 设置
 hpa:
-  minReplicas: 3
-  maxReplicas: 10
+  minReplicas: 30
+  maxReplicas: 30
   cpuUtilization: 50
   memoryUtilization: 70
 
@@ -31,19 +31,19 @@ secrets:
   SPRING_DATASOURCE_PASSWORD: "123456"
 
 # Pod的 resources 设置:普通框架
-#resources:
-  #requests:
-    #memory: "4000Mi"
-    #cpu: "4000m"
-  #limits:
-    #memory: "1Gi"
-    #cpu: "1"
-
-# Pod的 Resources 设置：柔性框架
 resources:
   requests:
-    memory: "1Mi"
-    cpu: "1m"
-  limits:
     memory: "1Gi"
     cpu: "0.5"
+  limits:
+    memory: "2Gi"
+    cpu: "1"
+
+# Pod的 Resources 设置：柔性框架
+#resources:
+  #requests:
+    #memory: "1Mi"
+    #cpu: "1m"
+  #limits:
+    #memory: "1Gi"
+    #cpu: "0.5"

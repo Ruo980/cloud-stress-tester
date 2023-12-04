@@ -12,22 +12,22 @@ def beautify_plot():
     plt.rcParams['figure.titlesize'] = 18
 
 
-def visualize_memory_data(file_path):
+def visualize_cpu_data(RL_path, SL_path):
     # 读取CSV文件
-    df = pd.read_csv(file_path)
+    df1 = pd.read_csv(RL_path)
+    df2 = pd.read_csv(SL_path)
 
     # 设置美化参数
     beautify_plot()
 
     # 绘制折线图
     plt.figure(figsize=(14, 9))
-    plt.plot(df['Time'], df['Temp_raw'], marker=None, linestyle='-', color='#2ecc71', linewidth=2,label="Raw_MEMORY")
-    plt.plot(df['Time'], df['Temp_re'], marker=None, linestyle='-', color='#e74c3c', linewidth=2,label="RE_MEMORY")
-
+    plt.plot(df1['Epoch'], df1['CTR'], marker=None, linestyle='-', color='#2ecc71', linewidth=2, label="RL")
+    plt.plot(df2['Epoch'], df2['CTR'], marker=None, linestyle='-', color='#e74c3c', linewidth=2, label="SL")
     # 添加标签和标题
-    plt.title('MEMORY USAGE OVER TIME')
-    plt.xlabel('Time (s)')
-    plt.ylabel('MEMORY Used Rate (%)')
+    plt.title('CTR OVER Epoch')
+    plt.xlabel('Epoch')
+    plt.ylabel('CTR')
 
     # 显示图例和网格
     plt.legend()
@@ -39,5 +39,6 @@ def visualize_memory_data(file_path):
 
 # 在函数外调用，确保不会在导入时显示图形
 if __name__ == "__main__":
-    file_path = "../dataset/merged/memory_result.csv"
-    visualize_memory_data(file_path)
+    RL_path = "../dataset/taobao/RL_output.csv"
+    SL_path = "../dataset/taobao/SL_output.csv"
+    visualize_cpu_data(RL_path, SL_path)
