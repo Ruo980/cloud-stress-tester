@@ -22,7 +22,7 @@ def read_requests_per_interval():
     构建请求量生成器函数：返回每个周期的请求量用于发起请求行数的读取
     :return:
     """
-    with open('dataset/request_per_interval.csv', 'r') as file:
+    with open('dataset/request_per_day_hour.csv', 'r') as file:
         reader = csv.reader(file)
         next(reader)  # 跳过表头
         for row in reader:
@@ -202,7 +202,9 @@ class WebsiteUser(HttpUser):
     用户线程类：
     指定一个用户的测试任务和每个周期内的等待时间
     """
+    # 用户执行任务列表
     tasks = [TestLocust]
+
     wait_time = between(6, 10)  # 设置用户执行任务之间的等待时间范围
 
 
