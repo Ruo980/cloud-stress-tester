@@ -60,6 +60,8 @@ class TaskLogic(TaskSet):
 
         # 迭代生成器：读取相应数量的 sorted_azurefunctions-accesses-2020.csv 行数并发起请求
         for request_count in request_counts:
+            print(request_count)
+            start_time = time.time()  # 记录循环开始时间
             for azure_data_row in read_azure_data(request_count):
                 # 根据每行各列的内容进行相应的请求
                 blob_type = azure_data_row[6]
@@ -72,9 +74,21 @@ class TaskLogic(TaskSet):
                     num = 1
                 # 发起 HTTP 请求，进行压力测试：根据请求的数据类型、读写方法和数据量来发送请求
                 self.perform_request(blob_type, read, num)
-                # 可以根据实际需要扩展其他 HTTP 方法
-            # 等待5分钟
-            time.sleep(300)
+
+                # 检查是否超过5分钟
+                #elapsed_time = time.time() - start_time
+                #if elapsed_time > 300:  # 5分钟 = 300秒
+                   #print("已超过5分钟，退出循环")
+                    #break
+
+            print("一个周期执行完成")
+            # 如果内部循环结束时还没超过5分钟，等待剩余时间
+            remaining_time = time.time() - start_time
+            print("大致花费时间为：", remaining_time)
+            #remaining_time = 300 - (time.time() - start_time)
+            #if remaining_time > 0:
+                #print(f"等待剩余时间 {remaining_time} 秒")
+                #time.sleep(remaining_time)
 
     # 发起 HTTP 请求，进行压力测试：根据请求的数据类型、读写方法和数据量来发送请求
     def perform_request(self, blob_type, read, num):
@@ -117,8 +131,10 @@ class TaskLogic(TaskSet):
             if read == "True":
                 # 发起 GET 请求
                 url = '/users-re' + '?row=' + str(num)
+                #print("Redis数据库发起请求:/users-re?row=" + str(num))
                 r = self.client.get(url, headers=header)
             else:
+                #print("Redis数据库发起post请求:/users-re")
                 # 发起 POST 请求
                 r = self.client.post('/users-re', headers=header, json=generate_random_users(num))
         elif blob_type == 'BlockBlob/application/octet-stream':
@@ -126,32 +142,39 @@ class TaskLogic(TaskSet):
             if read == "True":
                 # 发起 GET 请求
                 url = '/users' + '?row=' + str(num)
+                #print("MySQL 数据库发起请求:/users-re?row=" + str(num))
                 r = self.client.get(url, headers=header)
             else:
                 # 发起 POST 请求:如果是插入太多数据就考虑用Redis吧
                 if num > 2000:
                     r = self.client.post('/users-re', headers=header, json=generate_random_users(num))
+                #print("MySQL 数据库发起post请求:/users-re")
                 r = self.client.post('/users', headers=header, json=generate_random_users(num))
         elif blob_type == 'BlockBlob/application/zip' or blob_type == 'BlockBlob/application/x-zip-compressed' or blob_type == 'BlockBlob/application/json' or blob_type == 'BlockBlob/application/pdf':
             # 规模及数据量都在中等的范围内，按照读存方式进行请求发送
             if read == "True":
                 # 发起 GET 请求
                 url = '/users-re' + '?row=' + str(num)
+                #print("Redis数据库发起请求:/users-re?row=" + str(num))
                 r = self.client.get(url, headers=header)
             else:
                 # 发起 POST 请求:如果是插入太多数据就考虑用Redis吧
                 if num > 2000:
+                    #print("MySQL数据库发起post请求:/users-re")
                     r = self.client.post('/users-re', headers=header, json=generate_random_users(num))
+                #print("MySQL数据库发起post请求:/users")
                 r = self.client.post('/users', headers=header, json=generate_random_users(num))
         else:
             # 其他所有格式都使用Redis：主要测量web应用对Redis的性能
             if read == "True":
                 # 发起 GET 请求
                 url = '/users-re' + '?row=' + str(num)
+                #print("Redis数据库发起请求:/users-re?row=" + str(num))
                 r = self.client.get(url, headers=header)
                 # 断言返回结果中的 "succ" 字段值为 "ok"
                 # assert r.status_code == 200
             else:
+                #print("Redis数据库发起post请求:/users-re")
                 # 发起 POST 请求
                 r = self.client.post('/users-re', headers=header, json=generate_random_users(num))
 
