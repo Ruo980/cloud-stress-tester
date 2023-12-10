@@ -5,7 +5,7 @@ FROM python:3.11.5
 WORKDIR /app
 
 # 复制项目文件到容器指定的工作目录
-COPY .. /app
+COPY . /app
 
 # 安装项目依赖
 RUN python -m venv venv && \

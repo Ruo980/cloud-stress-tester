@@ -1,10 +1,100 @@
 import csv
-import random
-import string
 import time
-from itertools import cycle
 
+import pandas as pd
 from locust import HttpUser, task, TaskSet
+# 请求脚本的编写宗旨就是：保证请求数量和数据大小。对于数据生成和读取能简化则简化，不要影响压力测试的准确性。
+# 通过固定数据量能够实现请求负载只和RPS有关而不是和数据大小有关。
+
+# 定义post请求user-re接口的数据生成：50个用户
+users_re = [
+    {'nickname': 'ABCDE', 'age': 28},
+    {'nickname': 'xyzXY', 'age': 42},
+    {'nickname': 'LMNOP', 'age': 20},
+    {'nickname': 'qrstU', 'age': 55},
+    {'nickname': 'vwxyz', 'age': 36},
+    {'nickname': 'FGHIJ', 'age': 48},
+    {'nickname': 'klmno', 'age': 30},
+    {'nickname': 'pqrst', 'age': 22},
+    {'nickname': 'WXYZA', 'age': 40},
+    {'nickname': 'ijklm', 'age': 33},
+    {'nickname': 'UVWXY', 'age': 25},
+    {'nickname': 'nopqr', 'age': 50},
+    {'nickname': 'IJKLM', 'age': 18},
+    {'nickname': 'DEFGH', 'age': 38},
+    {'nickname': 'BCDEF', 'age': 45},
+    {'nickname': 'uvwxY', 'age': 29},
+    {'nickname': 'QRSTU', 'age': 32},
+    {'nickname': 'ghijk', 'age': 52},
+    {'nickname': 'opqrs', 'age': 21},
+    {'nickname': 'lmnop', 'age': 44},
+    {'nickname': 'WXYZA', 'age': 31},
+    {'nickname': 'ijklm', 'age': 46},
+    {'nickname': 'UVWXY', 'age': 27},
+    {'nickname': 'nopqr', 'age': 35},
+    {'nickname': 'IJKLM', 'age': 23},
+    {'nickname': 'DEFGH', 'age': 39},
+    {'nickname': 'BCDEF', 'age': 41},
+    {'nickname': 'uvwxY', 'age': 53},
+    {'nickname': 'QRSTU', 'age': 37},
+    {'nickname': 'ghijk', 'age': 26},
+    {'nickname': 'opqrs', 'age': 49},
+    {'nickname': 'lmnop', 'age': 19},
+    {'nickname': 'ABCDE', 'age': 47},
+    {'nickname': 'xyzXY', 'age': 34},
+    {'nickname': 'LMNOP', 'age': 24},
+    {'nickname': 'qrstU', 'age': 51},
+    {'nickname': 'vwxyz', 'age': 43},
+    {'nickname': 'FGHIJ', 'age': 28},
+    {'nickname': 'klmno', 'age': 37},
+    {'nickname': 'pqrst', 'age': 22},
+    {'nickname': 'WXYZA', 'age': 40},
+    {'nickname': 'ijklm', 'age': 33},
+    {'nickname': 'UVWXY', 'age': 55},
+    {'nickname': 'nopqr', 'age': 50},
+    {'nickname': 'IJKLM', 'age': 18},
+    {'nickname': 'DEFGH', 'age': 38},
+    {'nickname': 'BCDEF', 'age': 45},
+    {'nickname': 'uvwxY', 'age': 29},
+    {'nickname': 'QRSTU', 'age': 32},
+    {'nickname': 'ghijk', 'age': 52},
+    {'nickname': 'opqrs', 'age': 21},
+    {'nickname': 'lmnop', 'age': 44}
+]
+
+# 定义post请求user接口的数据生成：30个用户
+users = [
+    {'nickname': 'ABCDE', 'age': 28},
+    {'nickname': 'xyzXY', 'age': 42},
+    {'nickname': 'LMNOP', 'age': 20},
+    {'nickname': 'qrstU', 'age': 55},
+    {'nickname': 'vwxyz', 'age': 36},
+    {'nickname': 'FGHIJ', 'age': 48},
+    {'nickname': 'klmno', 'age': 30},
+    {'nickname': 'pqrst', 'age': 22},
+    {'nickname': 'WXYZA', 'age': 40},
+    {'nickname': 'ijklm', 'age': 33},
+    {'nickname': 'UVWXY', 'age': 25},
+    {'nickname': 'nopqr', 'age': 50},
+    {'nickname': 'IJKLM', 'age': 18},
+    {'nickname': 'DEFGH', 'age': 38},
+    {'nickname': 'BCDEF', 'age': 45},
+    {'nickname': 'uvwxY', 'age': 29},
+    {'nickname': 'QRSTU', 'age': 32},
+    {'nickname': 'ghijk', 'age': 52},
+    {'nickname': 'opqrs', 'age': 21},
+    {'nickname': 'lmnop', 'age': 44},
+    {'nickname': 'WXYZA', 'age': 31},
+    {'nickname': 'ijklm', 'age': 46},
+    {'nickname': 'UVWXY', 'age': 27},
+    {'nickname': 'nopqr', 'age': 35},
+    {'nickname': 'IJKLM', 'age': 23},
+    {'nickname': 'DEFGH', 'age': 39},
+    {'nickname': 'BCDEF', 'age': 41},
+    {'nickname': 'uvwxY', 'age': 53},
+    {'nickname': 'QRSTU', 'age': 37},
+    {'nickname': 'ghijk', 'age': 26}
+]
 
 
 # 读取请求量数据集
@@ -20,68 +110,33 @@ def read_request_counts():
             yield count
 
 
-# 读取请求内容数据集
-def read_azure_data(count):
-    with open('dataset/sorted_azurefunctions-accesses-2020.csv', 'r') as azure_csvfile:
-        csvreader = csv.reader(azure_csvfile)
-        # 跳过表头
-        header = next(csvreader, None)
-        # 将迭代器包装在一个循环迭代器中:使得如果读取到最后一行则会跳至第二行重新进行读取
-        cyclic_csvreader = cycle(csvreader)
-        for _ in range(count):
-            # 按照文件指针，接着上一次读取的位置继续读取
-            azure_data_row = next(cyclic_csvreader, None)
-            if azure_data_row:
-                yield azure_data_row
-
-
-# 生成post请求的数据:用户类作为数据体
-def generate_random_users(num):
-    users = []
-    for _ in range(num):
-        user = {
-            "nickname": ''.join(random.choices(string.ascii_letters, k=5)),
-            "age": random.randint(18, 60)
-        }
-        users.append(user)
-    return users
-
-
 # 任务类：定义一个用户的压测任务
 class TaskLogic(TaskSet):
+
+    def on_start(self):
+        # 初始化一个标志，用于在 perform_request 方法中切换接口
+        self.switch_interface = False
+
+        # 初始化一个标志，用于在 perform_request 方法中交替执行 GET 和 POST
+        self.perform_get = True
 
     @task
     def my_task(self):
         """
-        定义一个用户的压测任务:
-            用户同时操作requests-normalized.csv和sorted_azurefunctions-accesses-2020.csv两个数据集,前者规定了一次发起的请求量，后者规定了请求的内容和形式。
-            用户任务类一边读取requests-normalized.csv确定每次发起的请求量，然后再读取sorted_azurefunctions-accesses-2020.csv的指定行数。之后根据每行的内容发起不同的http请求。
-        :return:
+        定义一个用户的压测任务
         """
-        # 生成一个生成器：读取 request_per_day_hour.csv 中的请求量
-        request_counts = read_request_counts()
-
-        # 迭代生成器：读取相应数量的 sorted_azurefunctions-accesses-2020.csv 行数并发起请求
-        for request_count in request_counts:
+        # 读取请求量数据集，获取每5分钟的每秒请求量
+        df=pd.read_csv("./dataset/request/requests-3-normalized.csv")
+        count_values = df['count'].astype(int).tolist()
+        for request_count in count_values:
             print(request_count)
-            # 每秒发起request_count个请求，持续5分钟。也就是5次循环
+            # 每秒发起request_count个请求，持续5分钟，也就是300次循环
             for _ in range(300):
                 # 每秒发起request_count个请求，没有超过1秒则等待剩余时间；超过1秒则退出循环
                 start_time = time.time()  # 记录循环开始时间
-                for azure_data_row in read_azure_data(request_count):
+                for _ in range(request_count):
                     # 根据每行各列的内容进行相应的请求
-                    blob_type = azure_data_row[6]
-                    blob_bytes = azure_data_row[8]
-                    read = azure_data_row[9]
-                    blog_bytes = float(blob_bytes)
-                    # 获取数据量
-                    num = round(blog_bytes / 1000)
-                    if num <= 0:
-                        num = 1
-                    # 发起 HTTP 请求，进行压力测试：根据请求的数据类型、读写方法和数据量来发送请求
-                    self.perform_request(blob_type, read, num)
-
-                    # 检查是否超过1秒钟，如果超过则退出循环
+                    self.perform_request()
                     elapsed_time = time.time() - start_time
                     if elapsed_time > 1:
                         break
@@ -90,94 +145,31 @@ class TaskLogic(TaskSet):
                 remaining_time = 1 - (time.time() - start_time)
                 if remaining_time > 0:
                     time.sleep(remaining_time)
+            print("五分钟过去了")
 
     # 发起 HTTP 请求，进行压力测试：根据请求的数据类型、读写方法和数据量来发送请求
-    def perform_request(self, blob_type, read, num):
-        """
-        关于数据请求处理大致需要注意：
-        - 大规模的数据存入时不能使用redis（内存爆炸）
-        - 大规模的数据读取使用redis可以加快响应速度
-
-        设计原则：
-        - Redis进行规模以上数据的读取；
-        - MySQL进行规模以上数据的存储。
-        因此Redis的初始数据应该要尽量大来防止读取数据缺失，MySQL初始数据应该尽量小来方便存储。
-
-        设计分类：
-        根据上面的blob_type的分类和前面的设计原则做出如下分类：
-        1. 大量的数据请求：视为复杂操作，从 MySQL 数据库中读取数据
-        2. 少量的数据请求：视为简单操作，从 Redis 数据库中读取数据
-
-        blob_type的类型大致有(数据大小，数量多少)：
-        两个个数据类型是直接按照数据库类型进行划分的（负载均衡）：
-        - BlockBlob/（每次请求的数据量可大可小，样本总数量多，使用Redis）
-        - BlockBlob/application/octet-stream（每次请求的数据量可大可小，样本总数量多，使用MySQL）
-        其他数据类型则按照读写规则进行划分：
-        - BlockBlob/application/zip（每次请求的数据量大，样本总数量少）
-        - BlockBlob/application/x-zip-compressed（每次请求的数据量大，样本总数量少）
-        - BlockBlob/application/json(中等数据)
-        - BlockBlob/application/pdf（大数据）
-        杂类都使用Redis进行操作：
-        - BlockBlob/image/jpeg（小，少，Redis）
-        - BlockBlob/image/png（小，少，Redis）
-        - BlockBlob/text/plain（小，少，Redis）
-        - BlockBlob/text/csv（小，少，Redis）
-        - BlockBlob/text/html（小，少，Redis）
-        - other
-        """
+    def perform_request(self):
         header = {'Content-Type': 'application/json;charset=UTF-8'}
-        # 根据每行的数据类型进行不同的操作
-        if blob_type == 'BlockBlob/':
-            # 该类型操作 Redis 数据库
-            if read == "True":
-                # 发起 GET 请求
-                url = '/users-re' + '?row=' + str(num)
-                # print("Redis数据库发起请求:/users-re?row=" + str(num))
+        # 根据switch_interface的值请求不同的接口
+        if self.switch_interface:
+            if self.perform_get:
+                # 发起 GET 请求到 users-re 接口
+                url = '/users-re' + '?row=' + str(50)
                 r = self.client.get(url, headers=header)
             else:
-                # print("Redis数据库发起post请求:/users-re")
-                # 发起 POST 请求
-                r = self.client.post('/users-re', headers=header, json=generate_random_users(num))
-        elif blob_type == 'BlockBlob/application/octet-stream':
-            # 操作 MySQL 数据库
-            if read == "True":
-                # 发起 GET 请求
-                url = '/users' + '?row=' + str(num)
-                # print("MySQL 数据库发起请求:/users-re?row=" + str(num))
-                r = self.client.get(url, headers=header)
-            else:
-                # 发起 POST 请求:如果是插入太多数据就考虑用Redis吧
-                if num > 2000:
-                    r = self.client.post('/users-re', headers=header, json=generate_random_users(num))
-                # print("MySQL 数据库发起post请求:/users-re")
-                r = self.client.post('/users', headers=header, json=generate_random_users(num))
-        elif blob_type == 'BlockBlob/application/zip' or blob_type == 'BlockBlob/application/x-zip-compressed' or blob_type == 'BlockBlob/application/json' or blob_type == 'BlockBlob/application/pdf':
-            # 规模及数据量都在中等的范围内，按照读存方式进行请求发送
-            if read == "True":
-                # 发起 GET 请求
-                url = '/users-re' + '?row=' + str(num)
-                # print("Redis数据库发起请求:/users-re?row=" + str(num))
-                r = self.client.get(url, headers=header)
-            else:
-                # 发起 POST 请求:如果是插入太多数据就考虑用Redis吧
-                if num > 2000:
-                    # print("MySQL数据库发起post请求:/users-re")
-                    r = self.client.post('/users-re', headers=header, json=generate_random_users(num))
-                # print("MySQL数据库发起post请求:/users")
-                r = self.client.post('/users', headers=header, json=generate_random_users(num))
+                # 发起 POST 请求到 users-re 接口
+                r = self.client.post('/users-re', headers=header, json=users_re)
         else:
-            # 其他所有格式都使用Redis：主要测量web应用对Redis的性能
-            if read == "True":
-                # 发起 GET 请求
-                url = '/users-re' + '?row=' + str(num)
-                # print("Redis数据库发起请求:/users-re?row=" + str(num))
+            if self.perform_get:
+                # 发起 GET 请求到 users 接口
+                url = '/users' + '?row=' + str(30)
                 r = self.client.get(url, headers=header)
-                # 断言返回结果中的 "succ" 字段值为 "ok"
-                # assert r.status_code == 200
             else:
-                # print("Redis数据库发起post请求:/users-re")
-                # 发起 POST 请求
-                r = self.client.post('/users-re', headers=header, json=generate_random_users(num))
+                # 发起 POST 请求到 users 接口
+                r = self.client.post('/users', headers=header, json=users)
+        if not self.switch_interface:
+            self.perform_get = not self.perform_get
+        self.switch_interface = not self.switch_interface
 
 
 # 用户线程类：定义一个压测用户行为和任务
@@ -194,6 +186,6 @@ class MyUser(HttpUser):
 
 # 下面代码注释，我们使用命令行工具运行脚本进行压力测试
 # locust -f stress_simulator.py --host="http://127.0.0.1:8090"
-#if __name__ == '__main__':
-    # 使用locust命令行工具运行压力测试
-    #os.system('locust -f stress_simulator.py --host="http://127.0.0.1:8090"')
+# if __name__ == '__main__':
+# 使用locust命令行工具运行压力测试
+# os.system('locust -f stress_simulator.py --host="http://127.0.0.1:8090"')
