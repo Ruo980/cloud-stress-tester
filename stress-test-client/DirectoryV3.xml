@@ -17,4 +17,6 @@
     <tree path="/dataset" title="数据集包"/>
     <tree path="/generate_data" title="原始数据生成脚本包" extension="" presentableText="" tooltipTitle="" icon=""
           textColor="" backgroundColor=""/>
+    <tree path="/dataset/request" title="处理后请求量数据集" extension="" presentableText="" tooltipTitle="" icon=""
+          textColor="" backgroundColor=""/>
 </trees>

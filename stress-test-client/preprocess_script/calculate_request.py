@@ -42,3 +42,9 @@ df.plot(y='count', figsize=(20, 10), title='Requests per day per hour')
 plt.show()
 
 
+# 归一化处理：将count数据映射到[0,250]的区间
+df['count'] = (df['count'] - df['count'].min()) / (df['count'].max() - df['count'].min()) * 250
+df.plot(y='count', figsize=(20, 10), title='Requests per hour')
+plt.show()
+# 将归一化数据保存到新的数据集中
+df.to_csv('../dataset/request/requests-normalized.csv', index=False)

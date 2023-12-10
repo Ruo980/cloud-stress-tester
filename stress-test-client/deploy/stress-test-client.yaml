@@ -1,0 +1,25 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: stress-test-client
+  labels:
+    app: stress-test-client
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: stress-test-client
+  template:
+    metadata:
+      name: stress-test-client
+      labels:
+        app: stress-test-client
+    spec:
+      nodeSelector:
+        kubernetes.io/hostname: "slave-node3"
+      containers:
+        - name: stress-test-client
+          image: ruo980/stress-test-client-image:1.0.0
+          ports:
+            - containerPort: 8089
+          imagePullPolicy: IfNotPresent

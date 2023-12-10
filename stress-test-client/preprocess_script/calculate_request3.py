@@ -4,7 +4,7 @@ import pandas as pd
 import matplotlib.pyplot as plt
 
 # 读取request-1.csv数据集
-request_file_path = "../dataset/requests-2.csv"
+request_file_path = "../dataset/requests-3.csv"
 df = pd.read_csv(request_file_path)
 # 绘制count列的变化折线图
 df.plot(y='count', figsize=(20, 10), title='Requests per hour')
@@ -15,4 +15,4 @@ df['count'] = (df['count'] - df['count'].min()) / (df['count'].max() - df['count
 df.plot(y='count', figsize=(20, 10), title='Requests per hour')
 plt.show()
 # 将归一化数据保存到新的数据集中
-df.to_csv('../dataset/request/requests-2-normalized.csv', index=False)
+df.to_csv('../dataset/request/requests-3-normalized.csv', index=False)

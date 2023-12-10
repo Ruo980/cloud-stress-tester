@@ -38,4 +38,6 @@ To access the stress-test-web application, follow these steps:
 
 For any issues or further assistance, please refer to the documentation or contact your system administrator.
 
-install: helm install stress-test-web-release . --namespace lry
+6. **cmd InitProject
+   - install: helm install stress-test-web-release . --namespace lry
+   - uninstall:helm uninstall stress-test-web-release --namespace lry
