@@ -19,7 +19,14 @@ spec:
         kubernetes.io/hostname: "slave-node3"
       containers:
         - name: stress-test-client
-          image: ruo980/stress-test-client:1.0.0
+          image: ruo980/stress-test-client:3.0.0
           ports:
             - containerPort: 8089
           imagePullPolicy: IfNotPresent
+          resources:
+            limits:
+              cpu: 30000m
+              memory: 45Gi
+            requests:
+              cpu: 20000m
+              memory: 40Gi

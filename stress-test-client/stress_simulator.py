@@ -3,8 +3,12 @@ import time
 
 import pandas as pd
 from locust import HttpUser, task, TaskSet
-# 请求脚本的编写宗旨就是：保证请求数量和数据大小。对于数据生成和读取能简化则简化，不要影响压力测试的准确性。
+# 请求脚本的编写宗旨就是：保证请求数量和数据大小。对于数据生成和读取能简化则简化，不要影响客户端发起请求的速率和性能。
 # 通过固定数据量能够实现请求负载只和RPS有关而不是和数据大小有关。
+# 多线程是并发的而不是并行的。设置多线程的目的是：一个用户发起请求后往往会等待响应才会发起第二个请求，但是如果请求过多可能就会堵塞在请求序列中，从而影响下一个请求的发起。
+# 我们的思路是，先设置尽可能多的用户数量并发请求，来避免请求堵塞，从而验证本地客户端真正能够发起的总请求量（随着用户数量增多1秒内可能各用户请求数变小，但整体的请求量一定上去了（节省了请求序列等待时间））
+# 这样我们实际就会测出一个主机的最大请求量，然后我们再规定用户数量100，确定每秒发起请求量的范围，再对请求量数据集进行归一化处理，使得每秒发起请求量在这个范围内。
+# 这样我们本机能做到1秒内发起的请求量总数随着请求量数据集而发生变化。
 
 # 定义post请求user-re接口的数据生成：50个用户
 users_re = [
@@ -97,19 +101,6 @@ users = [
 ]
 
 
-# 读取请求量数据集
-def read_request_counts():
-    with open('./dataset/request/requests-3-normalized.csv', 'r') as request_csvfile:
-        csvreader = csv.reader(request_csvfile)
-        # 跳过表头
-        header = next(csvreader, None)
-        for request_row in csvreader:
-            # 读取count列的值：将字符串表示的浮点数转换为float然后使用int生成正整数请求量
-            count = int(float(request_row[1]))
-            # 指定生成器的生成内容：每次调用父函数时返回一个 count 请求量
-            yield count
-
-
 # 任务类：定义一个用户的压测任务
 class TaskLogic(TaskSet):
 
@@ -134,18 +125,27 @@ class TaskLogic(TaskSet):
             for _ in range(300):
                 # 每秒发起request_count个请求，没有超过1秒则等待剩余时间；超过1秒则退出循环
                 start_time = time.time()  # 记录循环开始时间
+                print(start_time)
+                i=0
                 for _ in range(request_count):
+                    i=i+1
                     # 根据每行各列的内容进行相应的请求
                     self.perform_request()
                     elapsed_time = time.time() - start_time
+                    print(elapsed_time)
                     if elapsed_time > 1:
+                        print("It has been 1 second and not all requests have been sent.")
+                        print(i)
+                        print()
+                        print("Sent approx:", i, "requests in 1 second")
                         break
                 print("Completed in one cycle")
                 # 如果内部循环结束时还没超过1秒钟，等待剩余时间
                 remaining_time = 1 - (time.time() - start_time)
                 if remaining_time > 0:
+                    print("The send request was completed within one second")
                     time.sleep(remaining_time)
-            print("五分钟过去了")
+            print("five minutes passed")
 
     # 发起 HTTP 请求，进行压力测试：根据请求的数据类型、读写方法和数据量来发送请求
     def perform_request(self):
@@ -154,7 +154,7 @@ class TaskLogic(TaskSet):
         if self.switch_interface:
             if self.perform_get:
                 # 发起 GET 请求到 users-re 接口
-                url = '/users-re' + '?row=' + str(50)
+                url = '/users-re' + '?row=' + str(500)
                 r = self.client.get(url, headers=header)
             else:
                 # 发起 POST 请求到 users-re 接口
@@ -162,7 +162,7 @@ class TaskLogic(TaskSet):
         else:
             if self.perform_get:
                 # 发起 GET 请求到 users 接口
-                url = '/users' + '?row=' + str(30)
+                url = '/users' + '?row=' + str(300)
                 r = self.client.get(url, headers=header)
             else:
                 # 发起 POST 请求到 users 接口

@@ -12,7 +12,8 @@
      <tree path="/preprocess_script/calculate_requests.py" title="预处理：计算周期内请求数"/>
      <tree path="/preprocess_script/generate_and_store_user_in_redis.py" title="预处理：生成初始化Redis数据"/>
      <tree path="/preprocess_script/preprocess_data.py" title="预处理：对时间戳进行重排序"/>
-    <tree path="/stress_simulator_plus.py" title="压力测试：改良版本，对MySQL和Redis都进行请求"/>
+    <tree path="/stress_simulator_plus.py" title="压力测试：改良版本，使得线程协作完成指定要求的请求负载" extension=""
+          presentableText="" tooltipTitle="" icon="" textColor="" backgroundColor=""/>
     <tree path="/dataset/request_per_interval.csv" title="周期性请求量数据集"/>
     <tree path="/dataset" title="数据集包"/>
     <tree path="/generate_data" title="原始数据生成脚本包" extension="" presentableText="" tooltipTitle="" icon=""

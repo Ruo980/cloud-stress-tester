@@ -1,9 +1,9 @@
 # 重新计算数据集的请求量变化
-"""
+
 
 import pandas as pd
 import matplotlib.pyplot as plt
-
+"""
 file_path = "../dataset/azurefunctions-accesses-2020.csv"
 df = pd.read_csv(file_path)
 
@@ -35,7 +35,7 @@ df = pd.read_csv(request_file_path)
 df['Hour'] = pd.to_datetime(df['Hour'])
 df.plot(x='Hour', y='count', figsize=(20, 10), title='Requests per hour')
 plt.show()
-
+"""
 # 数据可视化：将该数据集绘制成折线图，显示每天每小时的请求数量
 request_file_path = "../dataset/request_per_day_hour.csv"
 df = pd.read_csv(request_file_path)
@@ -44,9 +44,8 @@ plt.show()
 
 
 # 归一化处理：将count数据映射到[0,250]的区间
-df['count'] = (df['count'] - df['count'].min()) / (df['count'].max() - df['count'].min()) * 250
+df['count'] = (df['count'] - df['count'].min()) / (df['count'].max() - df['count'].min()) * 15
 df.plot(y='count', figsize=(20, 10), title='Requests per hour')
 plt.show()
 # 将归一化数据保存到新的数据集中
 df.to_csv('../dataset/request/requests-normalized.csv', index=False)
-"""
