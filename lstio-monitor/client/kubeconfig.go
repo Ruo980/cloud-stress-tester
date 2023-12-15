@@ -15,11 +15,16 @@ import (
 //
 //	@Description: 用于获取 kubernetes 配置文件。
 type KubeConfig struct {
+	Config *rest.Config
 }
 
-// NewKubeConfig 构造函数：返回一个 KubeConfig 对象
-func NewKubeConfig() KubeConfig {
-	return KubeConfig{}
+// NewKubeConfig 构造函数：返回一个 KubeConfig 对象，赋值 config，避免多次设置命令行
+func NewKubeConfig() *KubeConfig {
+	config, err := GetKubeConfig()
+	if err != nil {
+		panic(err.Error())
+	}
+	return &KubeConfig{Config: config}
 }
 
 // GetKubeConfig
@@ -28,7 +33,7 @@ func NewKubeConfig() KubeConfig {
 //	@receiver k
 //	@return *rest.Config
 //	@return error
-func (k KubeConfig) GetKubeConfig() (*rest.Config, error) {
+func GetKubeConfig() (*rest.Config, error) {
 	// 配置文件路径
 	var kubeconfig *string
 
@@ -57,15 +62,9 @@ func (k KubeConfig) GetKubeConfig() (*rest.Config, error) {
 //	@receiver k
 //	@return *kubernetes.Clientset
 //	@return error
-func (k KubeConfig) GetClientSet() (*kubernetes.Clientset, error) {
-	// 获取 Kubernetes 配置
-	config, err := k.GetKubeConfig()
-	if err != nil {
-		return nil, err
-	}
-
+func (k *KubeConfig) GetClientSet() (*kubernetes.Clientset, error) {
 	// 基于配置创建 Kubernetes 客户端集
-	clientset, err := kubernetes.NewForConfig(config)
+	clientset, err := kubernetes.NewForConfig(k.Config)
 	if err != nil {
 		return nil, err
 	}
@@ -78,15 +77,10 @@ func (k KubeConfig) GetClientSet() (*kubernetes.Clientset, error) {
 //	@receiver k
 //	@return dynamic.Interface
 //	@return error
-func (k KubeConfig) GetDynamicClient() (dynamic.Interface, error) {
-	// 获取 Kubernetes 配置
-	config, err := k.GetKubeConfig()
-	if err != nil {
-		return nil, err
-	}
+func (k *KubeConfig) GetDynamicClient() (dynamic.Interface, error) {
 
 	// 基于配置创建 Kubernetes 动态客户端
-	dynamicClient, err := dynamic.NewForConfig(config)
+	dynamicClient, err := dynamic.NewForConfig(k.Config)
 	if err != nil {
 		return nil, err
 	}
