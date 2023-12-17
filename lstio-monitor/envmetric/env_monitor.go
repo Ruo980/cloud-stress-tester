@@ -23,8 +23,8 @@ func NewEnvMonitor() *EnvMonitor {
 	envMonitor := EnvMonitor{
 		deploymentName:   "stress-test-web-release-deployment",
 		namespace:        "lry",
-		kubeConfig:       *client.NewKubeConfig(),
 		prometheusConfig: *client.NewPrometheusConfig(),
+		kubeConfig:       *client.NewKubeConfig2(),
 	}
 	return &envMonitor
 }

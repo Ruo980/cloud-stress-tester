@@ -18,8 +18,8 @@ type KubeConfig struct {
 	Config *rest.Config
 }
 
-// NewKubeConfig 构造函数：返回一个 KubeConfig 对象，赋值 config，避免多次设置命令行
-func NewKubeConfig() *KubeConfig {
+// NewKubeConfig2 构造函数：返回一个 KubeConfig 对象，赋值 config，避免多次设置命令行
+func NewKubeConfig2() *KubeConfig {
 	config, err := GetKubeConfig()
 	if err != nil {
 		panic(err.Error())
