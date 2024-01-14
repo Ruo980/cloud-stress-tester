@@ -7,6 +7,8 @@ import (
 
 // 配置Prometheus，获取Prometheus的客户端
 
+var prometheusConfig *PrometheusConfig
+
 // PrometheusConfig
 //
 //	@Description: 该类对外提供Prometheus客户端。
@@ -16,10 +18,14 @@ type PrometheusConfig struct {
 
 // NewPrometheusConfig
 //
-//	@Description: 构造函数：返回一个 PrometheusConfig 对象
+//	@Description: 构造函数：单例模式，返回一个 PrometheusConfig 对象
 //	@return PrometheusConfig
 func NewPrometheusConfig() *PrometheusConfig {
-	return &PrometheusConfig{}
+	// 单例模式
+	if prometheusConfig == nil {
+		prometheusConfig = &PrometheusConfig{}
+	}
+	return prometheusConfig
 }
 
 func (p *PrometheusConfig) GetProConfig() api.Config {

@@ -11,6 +11,8 @@ import (
 	"path/filepath"
 )
 
+var kubeConfig *KubeConfig
+
 // KubeConfig
 //
 //	@Description: 用于获取 kubernetes 配置文件。
@@ -18,13 +20,16 @@ type KubeConfig struct {
 	Config *rest.Config
 }
 
-// NewKubeConfig2 构造函数：返回一个 KubeConfig 对象，赋值 config，避免多次设置命令行
-func NewKubeConfig2() *KubeConfig {
-	config, err := GetKubeConfig()
-	if err != nil {
-		panic(err.Error())
+// NewKubeConfig 构造函数：单例模式返回一个 KubeConfig 对象，赋值 config，避免多次设置命令行
+func NewKubeConfig() *KubeConfig {
+	if kubeConfig == nil {
+		config, err := GetKubeConfig()
+		if err != nil {
+			panic(err.Error())
+		}
+		kubeConfig = &KubeConfig{Config: config}
 	}
-	return &KubeConfig{Config: config}
+	return kubeConfig
 }
 
 // GetKubeConfig
