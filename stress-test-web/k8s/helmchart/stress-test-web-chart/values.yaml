@@ -13,10 +13,10 @@ service:
 
 # hpa 设置
 hpa:
-  minReplicas: 30
-  maxReplicas: 30
-  cpuUtilization: 50
-  memoryUtilization: 70
+  minReplicas: 60
+  maxReplicas: 100
+  cpuUtilization: 10
+  memoryUtilization: 40
 
 # configMap 设置
 configMap:
@@ -33,11 +33,11 @@ secrets:
 # Pod的 resources 设置:普通框架
 resources:
   requests:
-    memory: "1Gi"
+    memory: "500Mi"
     cpu: "0.5"
   limits:
-    memory: "2Gi"
-    cpu: "1"
+    memory: "800Mi"
+    cpu: "0.8"
 
 # Pod的 Resources 设置：柔性框架
 #resources:
@@ -45,5 +45,5 @@ resources:
     #memory: "1Mi"
     #cpu: "1m"
   #limits:
-    #memory: "1Gi"
+    #memory: "500Mi"
     #cpu: "0.5"

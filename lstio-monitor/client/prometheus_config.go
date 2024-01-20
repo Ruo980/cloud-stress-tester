@@ -31,12 +31,18 @@ func NewPrometheusConfig() *PrometheusConfig {
 func (p *PrometheusConfig) GetProConfig() api.Config {
 	// 替换为你的 Prometheus 服务器地址
 	config := api.Config{
-		Address: "http://172.31.234.111:31995",
+		//Address: "http://172.31.234.111:31995",// 容器指标监控，使用istio Prometheus
+		Address: "http://127.0.0.1:9090", // 集群节点监控，使用kubernetes Prometheus
 	}
 	return config
 }
 
-// 创建 Prometheus 监控客户端
+// GetPrometheusClient
+//
+//	@Description: 创建 Prometheus 监控客户端
+//	@receiver p
+//	@return v1.API
+//	@return error
 func (p *PrometheusConfig) GetPrometheusClient() (v1.API, error) {
 
 	config := p.GetProConfig()

@@ -18,15 +18,15 @@ type EnvMonitor struct {
 	prometheusConfig client.PrometheusConfig
 }
 
-// NewEnvMonitor 构造函数：返回一个 EnvMonitor 对象
-func NewEnvMonitor() *EnvMonitor {
-	envMonitor := EnvMonitor{
-		deploymentName:   "stress-test-web-release-deployment",
-		namespace:        "lry",
-		prometheusConfig: *client.NewPrometheusConfig(),
+// NewEnvMonitor 构造函数：返回一个 EnvMonitor 对象(写成单例模式)
+func NewEnvMonitor(deploymentName string, namespace string) *EnvMonitor {
+	envMonitor := &EnvMonitor{
+		deploymentName:   deploymentName,
+		namespace:        namespace,
 		kubeConfig:       *client.NewKubeConfig(),
+		prometheusConfig: *client.NewPrometheusConfig(),
 	}
-	return &envMonitor
+	return envMonitor
 }
 
 // GetPodsCPUUsage 获取Pods的当前平均 CPU 利用率
