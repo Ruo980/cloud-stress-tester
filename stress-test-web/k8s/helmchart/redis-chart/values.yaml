@@ -1,0 +1,13 @@
+# redis-chart/values.yaml
+
+replicaCount: 1
+
+redis:
+  image: redis
+  resources:
+    requests:
+      memory: "3Gi"
+      cpu: "3"
+    limits:
+      memory: "6Gi"
+      cpu: "6"

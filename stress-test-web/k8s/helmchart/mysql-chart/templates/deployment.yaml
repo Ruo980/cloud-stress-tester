@@ -1,10 +1,12 @@
+# templates/deployment.yaml
+
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: mysql-deployment
-  namespace: lry
+  name: {{ .Release.Name }}-mysql-deployment
+  namespace: {{ .Release.Namespace }}
 spec:
-  replicas: 1
+  replicas: {{ .Values.replicaCount}}
   selector:
     matchLabels:
       app: mysql
@@ -15,28 +17,21 @@ spec:
     spec:
       # 设置亲和度:只在slave-node2上进行实验,将数据库等都放在slave-node3上来避免和应用pods发生资源争夺。
       nodeSelector:
-        kubernetes.io/hostname: "slave-node3"
+        kubernetes.io/hostname: "slave-node2"
       containers:
         - name: mysql
-          image: mysql:8.1
-          # 设置初始创建时的账号密码、数据库等信息
+          image: {{ .Values.mysql.image }}
           env:
             - name: MYSQL_ROOT_PASSWORD
               valueFrom:
                 secretKeyRef:
-                  name: mysql-secret
+                  name: {{ .Release.Name }}-mysql-secret
                   key: root-password
             - name: MYSQL_DATABASE
               valueFrom:
                 configMapKeyRef:
-                  name: mysql-config
+                  name: {{ .Release.Name }}-mysql-config
                   key: MYSQL_DATABASE
           ports:
             - containerPort: 3306
-          resources:
-            requests:
-              memory: "3Gi"
-              cpu: "3"
-            limits:
-              memory: "6Gi"
-              cpu: "6"
+          resources: {{ toYaml .Values.resources | nindent 12 }}

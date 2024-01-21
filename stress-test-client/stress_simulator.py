@@ -189,3 +189,6 @@ class MyUser(HttpUser):
 # if __name__ == '__main__':
 # 使用locust命令行工具运行压力测试
 # os.system('locust -f stress_simulator.py --host="http://127.0.0.1:8090"')
+
+
+# 发起的请求目标为：http://172.31.234.111:30341

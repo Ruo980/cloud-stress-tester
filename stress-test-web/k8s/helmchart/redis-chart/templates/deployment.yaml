@@ -1,10 +1,12 @@
+# templates/deployment.yaml
+
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: redis-deployment
-  namespace: lry
+  name: {{ .Release.Name }}-redis-deployment
+  namespace: {{ .Release.Namespace }}
 spec:
-  replicas: 1  # Redis 默认只有一个
+  replicas: {{ .Values.redis.replicaCount }}
   selector:
     matchLabels:
       app: redis
@@ -18,13 +20,7 @@ spec:
         kubernetes.io/hostname: "slave-node3"
       containers:
         - name: redis
-          image: redis  # 使用官方 Redis 镜像
+          image: {{ .Values.redis.image }}
           ports:
-            - containerPort: 6379  # Redis 默认端口
-          resources:
-            requests:
-              memory: "3Gi"
-              cpu: "3"
-            limits:
-              memory: "6Gi"
-              cpu: "6"
+            - containerPort: 6379
+          resources: {{ toYaml .Values.redis.resources | nindent 12 }}

@@ -1,5 +1,4 @@
 # my-stress-test-chart/values.yaml
-replicaCount: 5
 # image 设置
 image:
   repository: ruo980/stress-test-web
@@ -11,16 +10,20 @@ service:
   port: 8090
   nodePort: 30341
 
+# deployment 设置
+replicasCount: 200
+resourceConfiguration: "flexible"  # normal或者 "flexible" 两种选择切换两种调度器下的资源需求
+
 # hpa 设置
 hpa:
-  minReplicas: 60
-  maxReplicas: 100
+  minReplicas: 200
+  maxReplicas: 200
   cpuUtilization: 10
   memoryUtilization: 40
 
 # configMap 设置
 configMap:
-  SPRING_DATASOURCE_URL: "jdbc:mysql://mysql-service:3306/test?serverTimezone=UTC&useUnicode=true&characterEncoding=utf8&useSSL=false"
+  SPRING_DATASOURCE_URL: "jdbc:mysql://mysql-service:3306/test?serverTimezone=UTC&useUnicode=true&characterEncoding=utf8&useSSL=false&allowPublicKeyRetrieval=true"
   SPRING_DATASOURCE_DRIVER_CLASS_NAME: "com.mysql.cj.jdbc.Driver"
   SPRING_REDIS_HOST: "redis-service"
   SPRING_REDIS_PORT: "6379"
@@ -29,21 +32,3 @@ configMap:
 secrets:
   SPRING_DATASOURCE_USERNAME: "root"
   SPRING_DATASOURCE_PASSWORD: "123456"
-
-# Pod的 resources 设置:普通框架
-resources:
-  requests:
-    memory: "500Mi"
-    cpu: "0.5"
-  limits:
-    memory: "800Mi"
-    cpu: "0.8"
-
-# Pod的 Resources 设置：柔性框架
-#resources:
-  #requests:
-    #memory: "1Mi"
-    #cpu: "1m"
-  #limits:
-    #memory: "500Mi"
-    #cpu: "0.5"

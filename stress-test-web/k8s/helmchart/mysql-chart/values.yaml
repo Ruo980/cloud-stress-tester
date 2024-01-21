@@ -1,0 +1,16 @@
+# mysql-chart/values.yaml
+
+replicaCount: 1
+
+mysql:
+  image: mysql:8.1
+  rootPassword: MTIzNDU2  # 123456 的 Base64 编码
+  database: test
+
+resources:
+  requests:
+    memory: "3Gi"
+    cpu: "3"
+  limits:
+    memory: "6Gi"
+    cpu: "6"

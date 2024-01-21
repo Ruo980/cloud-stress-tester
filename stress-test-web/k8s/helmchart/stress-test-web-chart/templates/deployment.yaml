@@ -5,7 +5,7 @@ metadata:
   name: {{ .Release.Name }}-deployment
   namespace: {{ .Release.Namespace }}
 spec:
-  replicas: 30
+  replicas: {{ .Values.replicasCount }}
   selector:
     matchLabels:
       app: stress-test-web
@@ -14,11 +14,13 @@ spec:
       labels:
         app: stress-test-web
     spec:
+      {{- if eq .Values.resourceConfiguration "flexible" }}
       # 柔性调度框架调整
-      #schedulerName: rescheduler
-      # 设置亲和度:只在slave-node3上进行实验
+      schedulerName: rescheduler
+      {{- end }}
+      # 设置亲和度:只在slave-node2上进行实验
       nodeSelector:
-        kubernetes.io/hostname: "slave-node3"
+        kubernetes.io/hostname: "slave-node2"
       containers:
         - name: stress-test-web
           image: {{ .Values.image.repository }}:{{ .Values.image.tag }}
@@ -56,10 +58,20 @@ spec:
                   name: {{ .Release.Name }}-configmap
                   key: SPRING_REDIS_PORT
           imagePullPolicy: IfNotPresent
+          {{- if eq .Values.resourceConfiguration "normal" }}
           resources:
             requests:
-              memory: "{{ .Values.resources.requests.memory }}"
-              cpu: "{{ .Values.resources.requests.cpu }}"
+              memory: "500Mi"
+              cpu: "0.5"
             limits:
-              memory: "{{.Values.resources.limits.memory}}"
-              cpu: "{{.Values.resources.limits.cpu}}"
+              memory: "800Mi"
+              cpu: "0.8"
+          {{- else if eq .Values.resourceConfiguration "flexible" }}
+          resources:
+            requests:
+              memory: "1Mi"
+              cpu: "1m"
+            limits:
+              memory: "500Mi"
+              cpu: "0.5"
+          {{- end }}

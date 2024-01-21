@@ -1,0 +1,16 @@
+尽管我们可以进入到chart内部value.yaml所在目录中进行启动，但是为了尽量避免侵入式编程，因此直接在当前命令执行以下指令启动服务:
+```shell
+1.启动mysql并打开服务
+   - install: helm install mysql-release ./mysql-chart --namespace lry
+   - uninstall:helm uninstall mysql-release --namespace lry
+
+2.启动redis并打开服务
+   - install: helm install redis-release ./redis-chart --namespace lry
+   - uninstall:helm uninstall redis-release --namespace lry
+
+3.启动stress-test-web并打开服务
+   - install: helm install stress-test-web-release ./stress-test-web-chart --namespace lry
+   - uninstall:helm uninstall stress-test-web-release --namespace lry
+```
+
+关于命名空间：当前为lry，可以调整为其他命名空间如：resilient
