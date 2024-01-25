@@ -20,14 +20,14 @@ def visualize_cpu_data(file_path):
     beautify_plot()
 
     # 绘制折线图
-    plt.figure(figsize=(18, 12))
-    plt.plot(df['Time'], df['Temp_raw'], marker=None, linestyle='-', color='#2ecc71', linewidth=2,label="Raw_request")
-    plt.plot(df['Time'], df['Temp_re'], marker=None, linestyle='-', color='#e74c3c', linewidth=2,label="RE_request")
+    plt.figure(figsize=(14, 9))
+    plt.plot(df['Time'], df['POD_OR'], marker=None, linestyle='-', color='#2ecc71', linewidth=2,label="OR_POD")
+    plt.plot(df['Time'], df['POD_RE'], marker=None, linestyle='-', color='#e74c3c', linewidth=2,label="RE_POD")
 
     # 添加标签和标题
-    plt.title('REQUEST RATE OVER TIME')
+    plt.title('Pods OVER TIME')
     plt.xlabel('Time (s)')
-    plt.ylabel('Request Rate (ops/s)')
+    plt.ylabel('Pod Quantity (pieces)')
 
     # 显示图例和网格
     plt.legend()
@@ -39,5 +39,5 @@ def visualize_cpu_data(file_path):
 
 # 在函数外调用，确保不会在导入时显示图形
 if __name__ == "__main__":
-    file_path = "../dataset/merged/request_result.csv"
+    file_path = "../dataset/merged/pod_result.csv"
     visualize_cpu_data(file_path)

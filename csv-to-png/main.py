@@ -1,16 +1,19 @@
-# This is a sample Python script.
+import os
 
-# Press Shift+F10 to execute it or replace it with your code.
-# Press Double Shift to search everywhere for classes, files, tool windows, actions, and settings.
+import visualize
 
-
-def print_hi(name):
-    # Use a breakpoint in the code line below to debug your script.
-    print(f'Hi, {name}')  # Press Ctrl+F8 to toggle the breakpoint.
-
-
-# Press the green button in the gutter to run the script.
 if __name__ == '__main__':
-    print_hi('PyCharm')
+    # 获取当前工作目录
+    current_dir = os.getcwd()
 
-# See PyCharm help at https://www.jetbrains.com/help/pycharm/
+    # 数据预处理：读取原生框架指标和柔性框架指标，处理时间戳并合并结果，导出到各自文件夹
+    visualize.preprocessing_script.preprocess()
+
+    # 数据可视化：读取处理后的CPU数据，绘制折线图
+    visualize.visualize_cpu_data.visualize_cpu_data(current_dir + "/dataset/merged/cpu_result.csv")
+
+    # 数据可视化：读取处理后的Memory数据，绘制折线图
+    visualize.visualize_memory_data.visualize_memory_data(current_dir +"/dataset/merged/memory_result.csv")
+
+    # 数据可视化：读取处理后的Pod数据，绘制折线图
+    visualize.visualize_pod_data.visualize_cpu_data(current_dir +"/dataset/merged/pod_result.csv")

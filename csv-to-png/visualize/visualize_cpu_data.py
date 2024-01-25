@@ -21,8 +21,8 @@ def visualize_cpu_data(file_path):
 
     # 绘制折线图
     plt.figure(figsize=(14, 9))
-    plt.plot(df['Time'], df['Temp_raw'], marker=None, linestyle='-', color='#2ecc71', linewidth=2,label="Raw_CPU")
-    plt.plot(df['Time'], df['Temp_re'], marker=None, linestyle='-', color='#e74c3c', linewidth=2,label="RE_CPU")
+    plt.plot(df['Time'], df['CPU_OR'], marker=None, linestyle='-', color='#2ecc71', linewidth=2,label="OR_CPU")
+    plt.plot(df['Time'], df['CPU_RE'], marker=None, linestyle='-', color='#e74c3c', linewidth=2,label="RE_CPU")
 
     # 添加标签和标题
     plt.title('CPU USAGE OVER TIME')
